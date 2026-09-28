@@ -1,0 +1,137 @@
+const readline = require("readline");
+
+const boardSize = 8;
+const maximumShots = 30;
+const shipSymbol = "*";
+const emptySymbol = "~";
+const hitSymbol = "X";
+const missSymbol = "O";
+
+const input = readline.createInterface({
+	input: process.stdin,
+	output: process.stdout
+});
+
+const ask = (question) => new Promise((resolve) => input.question(question, resolve));
+
+function createBoard() {
+	return Array.from({ length: boardSize }, () =>
+		Array(boardSize).fill(emptySymbol)
+	);
+}
+
+function setShip(board, ship) {
+	const rowStep = ship.direction === "vertical" ? 1 : 0;
+	const columnStep = ship.direction === "horizontal" ? 1 : 0;
+
+	for (let part = 0; part < ship.length; part++) {
+		const row = ship.row - 1 + part * rowStep;
+		const column = ship.column - 1 + part * columnStep;
+
+		if (board[row][column] === shipSymbol) {
+			throw new Error(`Invalid placement for ${ship.name}.`);
+		}
+
+		board[row][column] = shipSymbol;
+	}
+}
+
+function createPlayer(name, ships) {
+	const board = createBoard();
+	ships.forEach((ship) => setShip(board, ship));
+
+	return {
+		name,
+		board,
+		shots: createBoard(),
+		shipsLeft: board.flat().filter((cell) => cell === shipSymbol).length,
+		shotsTaken: 0
+	};
+}
+
+const player1 = createPlayer("Player 1", [
+	{ name: "Carrier", length: 4, row: 1, column: 2, direction: "horizontal" },
+	{ name: "Battleship", length: 3, row: 3, column: 6, direction: "vertical" },
+	{ name: "Cruiser", length: 3, row: 6, column: 1, direction: "horizontal" },
+	{ name: "Destroyer", length: 2, row: 8, column: 7, direction: "horizontal" }
+]);
+
+const player2 = createPlayer("Player 2", [
+	{ name: "Carrier", length: 4, row: 2, column: 1, direction: "vertical" },
+	{ name: "Battleship", length: 3, row: 5, column: 4, direction: "horizontal" },
+	{ name: "Cruiser", length: 3, row: 7, column: 6, direction: "horizontal" },
+	{ name: "Destroyer", length: 2, row: 1, column: 7, direction: "vertical" }
+]);
+
+function printBoard(board) {
+	console.log(`\n    ${Array.from({ length: boardSize }, (_, index) => index + 1).join(" ")}`);
+	console.log(`   ${"--".repeat(boardSize)}-`);
+
+	for (let row = 0; row < boardSize; row++) {
+		console.log(`${row + 1} | ${board[row].join(" ")}`);
+	}
+}
+
+function validCoordinates(coordinates) {
+	return coordinates.length === 2 &&
+		coordinates.every((coordinate) => Number.isInteger(coordinate)) &&
+		coordinates.every((coordinate) => coordinate >= 1 && coordinate <= boardSize);
+}
+
+async function playGame() {
+	let currentPlayer = player1;
+	let opponent = player2;
+
+	console.log("Two-player Battleship");
+	console.log(`Each player has ${maximumShots} shots. Enter coordinates as: row column`);
+
+	while (player1.shipsLeft > 0 && player2.shipsLeft > 0) {
+		console.log(`\n${currentPlayer.name}'s turn. Shooting at ${opponent.name}'s board.`);
+		printBoard(currentPlayer.shots);
+
+		const answer = (await ask(`\n${currentPlayer.name}, enter coordinates (1-${boardSize} 1-${boardSize}): `)).trim();
+		const coordinates = answer.split(/\s+/).map(Number);
+
+		if (!validCoordinates(coordinates)) {
+			console.log(`Please enter two whole numbers between 1 and ${boardSize}.`);
+			continue;
+		}
+
+		const row = coordinates[0] - 1;
+		const column = coordinates[1] - 1;
+
+		if (currentPlayer.shots[row][column] !== emptySymbol) {
+			console.log("You already shot there. Try another coordinate.");
+			continue;
+		}
+
+		currentPlayer.shotsTaken++;
+
+		if (opponent.board[row][column] === shipSymbol) {
+			currentPlayer.shots[row][column] = hitSymbol;
+			opponent.board[row][column] = hitSymbol;
+			opponent.shipsLeft--;
+			console.log(`Hit! ${opponent.shipsLeft} ship sections remain.`);
+		} else {
+			currentPlayer.shots[row][column] = missSymbol;
+			console.log("Miss!");
+		}
+
+		if (opponent.shipsLeft === 0) {
+			console.log(`\n${currentPlayer.name} wins!`);
+			console.log(`${currentPlayer.name} needed ${currentPlayer.shotsTaken} shots.`);
+			break;
+		}
+
+		if (currentPlayer.shotsTaken >= maximumShots) {
+			console.log(`${currentPlayer.name} used all ${maximumShots} shots.`);
+			break;
+		}
+
+		[currentPlayer, opponent] = [opponent, currentPlayer];
+	}
+
+	input.close();
+}
+
+playGame();

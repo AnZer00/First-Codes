@@ -1,0 +1,10 @@
+process.stdout.write("Name: ");
+process.stdin.on("data", function (inputFromUser) {
+    let userInput = inputFromUser;
+    let counter = 0;
+    while (counter < 5) {
+        process.stdout.write(userInput);
+        counter++;
+    }
+   process.exit();
+});

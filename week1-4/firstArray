@@ -1,0 +1,25 @@
+const fruits = ["banana", "apple", "kiwi", "orange"];
+
+console.log(`First item in the array is ${fruits[0]}`);
+
+for (let index = fruits.length - 1; index >= 0; index--) {
+	console.log(fruits[index]);
+}
+// toine
+
+const animals = ["Lion", "Parrot", "Horse", "Squirrel"];
+
+console.log(`First item in the array is ${animals[0]}`);
+
+for (let index = animals.length - 1; index >= 0; index--) {
+    console.log(animals[index]);
+} 
+
+// kolmas
+
+const woods = ["Oak", "Pine", "Birch", "Maple"];
+
+console.log(`First item in the array is ${woods[0]}`);
+for (let index = woods.length - 1; index >= 0; index--) {
+    console.log(woods[index]);
+} 

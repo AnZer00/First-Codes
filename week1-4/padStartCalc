@@ -1,0 +1,22 @@
+const readline = require("readline");
+const util = require("util");
+
+const input = readline.createInterface({
+	input: process.stdin,
+	output: process.stdout
+});
+
+input.question("Enter a number: ", (answer) => {
+	const number = Number(answer.trim());
+
+	console.log("\nMultiplication table".padEnd(24, " "));
+	console.log("-".repeat(24));
+
+	for (let multiplier = 1; multiplier <= 10; multiplier++) {
+		const expression = `${number} x ${multiplier}`.padEnd(10, " ");
+		const result = String(number * multiplier).padStart(5, " ");
+		console.log(util.format("%s =%s", expression, result));
+	}
+
+	input.close();
+});

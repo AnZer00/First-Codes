@@ -1,0 +1,10 @@
+let fruitsalad = [
+    ["banana", 3],
+    ["apple", 2],
+    ["kiwi", 5],
+    ["orange", 4]
+];
+process.stdout.write("Fruitsalad contains:\n");
+for (let index = 0; index < fruitsalad.length; index++) {
+    process.stdout.write(`${fruitsalad[index][0]}: ${fruitsalad[index][1]}\n`);
+}

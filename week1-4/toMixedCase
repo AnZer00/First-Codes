@@ -1,0 +1,22 @@
+const readline = require("readline");
+
+const input = readline.createInterface({
+	input: process.stdin,
+	output: process.stdout
+});
+
+input.question("Enter a string: ", (answer) => {
+	const text = answer.trim();
+	let mixedCaseText = "";
+
+	for (let index = 0; index < text.length; index++) {
+		if (index % 2 === 0) {
+			mixedCaseText += text.charAt(index).toUpperCase();
+		} else {
+			mixedCaseText += text.charAt(index).toLowerCase();
+		}
+	}
+
+	console.log(mixedCaseText);
+	input.close();
+});

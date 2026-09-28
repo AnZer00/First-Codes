@@ -1,0 +1,22 @@
+const readline = require("readline");
+
+const numbers = [48, 67, 42, 876, 9868, 159, 801, 78, 50, 100];
+const input = readline.createInterface({ input: process.stdin, output: process.stdout });
+
+input.question("What number do you want to search for? ", (answer) => {
+    const searchNumber = Number(answer);
+    let found = false;
+
+    for (let index = 0; index < numbers.length; index++) {
+        if (numbers[index] === searchNumber) {
+            console.log(`Item found at index ${index}`);
+            found = true;
+        }
+    }
+
+    if (!found) {
+        console.log("Item was not found.");
+    }
+    
+    input.close();
+});

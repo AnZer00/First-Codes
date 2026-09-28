@@ -1,0 +1,64 @@
+const readline = require("readline");
+
+const board = [
+	["~", "~", "~", "~", "~"],
+	["~", "~", "~", "~", "~"],
+	["~", "~", "~", "~", "~"],
+	["~", "~", "~", "~", "~"],
+	["~", "~", "~", "~", "~"]
+];
+
+const input = readline.createInterface({ input: process.stdin, output: process.stdout });
+let shipsLeft = 5;
+let shots = 0;
+
+function askForShot() {
+	const visibleBoard = board.map((row) =>
+		row.map((cell) => cell === "~" ? "~" : cell).join(" ")
+	);
+	console.log("\n" + visibleBoard.join("\n"));
+
+	input.question("Enter row and column (1-5 1-5): ", (answer) => {
+		const [row, column] = answer.split(" ").map(Number);
+		const selectedRow = row - 1;
+		const selectedColumn = column - 1;
+
+		if (
+			!Number.isInteger(row) ||
+			!Number.isInteger(column) ||
+			row < 1 || row > 5 ||
+			column < 1 || column > 5
+		) {
+            console.log("Invalid input. Please enter two numbers between 1 and 5.");
+            askForShot();
+            return;
+        }
+
+        if (board[selectedRow][selectedColumn] === "X" || board[selectedRow][selectedColumn] === "O") {
+            console.log("You already shot there.");
+            askForShot();
+            return;
+        }
+
+        shots++;
+
+        if (board[selectedRow][selectedColumn] === "~") {
+            board[selectedRow][selectedColumn] = "X";
+            shipsLeft--;
+            console.log(`Hit! Ships left: ${shipsLeft}`);
+        } else {
+            board[selectedRow][selectedColumn] = "O";
+            console.log("Miss!");
+        }
+
+        if (shipsLeft > 0) {
+            askForShot();
+        } else {
+            console.log(`You sank all the ships in ${shots} shots!`);
+            input.close();
+        }
+    });
+}
+
+console.log("Find all the ships!");
+askForShot();

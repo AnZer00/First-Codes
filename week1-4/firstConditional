@@ -1,0 +1,11 @@
+// Ask the user to input a number.
+process.stdout.write("Number: ");
+process.stdin.on("data", function ( inputFromUser) {
+let userNumber = inputFromUser;
+if (userNumber == 0) {
+process.stdout.write("You entered: " + userNumber);
+} else {
+process.stdout.write("You entered something else: ");
+}
+process.exit();
+});

@@ -1,0 +1,11 @@
+for (let tableNumber = 1; tableNumber <= 10; tableNumber++) {
+    console.log(`Multiplication table for ${tableNumber}`);
+    console.log("******************************");
+
+    for (let multiplier = 1; multiplier <= 10; multiplier++) {
+        const expression = `${multiplier} * ${tableNumber} = ${multiplier * tableNumber}`;
+        console.log(`*${expression.padStart(24).padEnd(29)}*`);
+    }
+
+    console.log("******************************");
+}

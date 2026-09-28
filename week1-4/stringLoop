@@ -1,0 +1,16 @@
+const readline = require("readline");
+
+const input = readline.createInterface({
+    input: process.stdin,
+    output: process.stdout
+});
+
+input.question("Enter a string: ", (answer) => {
+    const text = answer.trim();
+
+    for (let index = 0; index < text.length; index++) {
+        console.log(`${index + 1}. character is ${text.charAt(index)}`);
+    }
+
+    input.close();
+});
